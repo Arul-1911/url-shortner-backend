@@ -32,7 +32,7 @@ router.post("/", async (req, res) => {
 			}).save();
 		}
 
-		const url = `${process.env.BASE_URL}password-reset/${user._id}/${token.token}/`;
+		const url = `${process.env.BASE_URL}api/password-reset/${user._id}/${token.token}/`;
 		await sendEmail(user.email, "Password Reset", url);
 
 		res
@@ -48,6 +48,7 @@ router.post("/", async (req, res) => {
 router.get("/:id/:token", async (req, res) => {
   try {
     const user = await User.findOne({ _id: req.params.id });
+    console.log(user)
     if (!user) return res.status(400).send({ message: "Invalid Link" });
 
     const token = await Token.findOne({
@@ -56,7 +57,7 @@ router.get("/:id/:token", async (req, res) => {
     });
 
     if (!token) return res.status(400).send({ message: "Token Doesn't Exist" });
-
+//redirect funtion to write(gmeet instruction)
     res.status(200).send({ message: "Valid url" });
   } catch (error) {
     res.status(500).send({ message: "Internal server error" });

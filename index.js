@@ -5,7 +5,9 @@ const cors = require('cors');
 const connection  = require("./db");
 const userRoutes = require("./routes/user");
 const authRoutes = require("./routes/auth");
-const passwordResetRoute = require("./routes/passwordReset")
+const passwordResetRoute = require("./routes/passwordReset");
+const mongoose = require('mongoose');
+const mongodb = require('mongodb');
 
 //middlewares
 app.use(cors());
@@ -21,5 +23,5 @@ app.use("/api/password-reset",passwordResetRoute);
 
 
 //PORT
-const port = 7080;
+const port = process.env.PORT ;
 app.listen(port, () => console.log(`Port listening in ${port}..`));
