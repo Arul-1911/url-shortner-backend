@@ -32,7 +32,9 @@ router.post("/", async (req, res) => {
 			}).save();
 		}
 
-		const url = `${process.env.BASE_URL}api/password-reset/${user._id}/${token.token}/`;
+		// const url = `${process.env.BASE_URL}password-reset/${user._id}/${token.token}/`;
+    const url = `http://localhost:3000/api/password-reset/${user._id}/${token.token}/`;
+    
 		await sendEmail(user.email, "Password Reset", url);
 
 		res
@@ -57,8 +59,24 @@ router.get("/:id/:token", async (req, res) => {
     });
 
     if (!token) return res.status(400).send({ message: "Token Doesn't Exist" });
-//redirect funtion to write(gmeet instruction)
-    res.status(200).send({ message: "Valid url" });
+
+//redirect funtion to show password reset component
+
+
+//  res.redirect(`http://localhost:3000/password-reset/${user._id}/${token.token}`);
+
+    // res.status(200).send({ message: "Valid url" });  // thala vali puducha line..
+
+    //new gbt code
+    const resetUrl = `http://localhost:3000/password-reset/${user._id}/${token.token}`;
+
+    // Uncomment the line below if you want to redirect to the reset URL
+    // res.redirect(resetUrl);
+
+    // Alternatively, you can include the reset URL in the response
+    res.status(200).send({ message: "Valid url", resetUrl });
+
+
   } catch (error) {
     res.status(500).send({ message: "Internal server error" });
   }
@@ -86,7 +104,7 @@ router.post("/:id/:token", async (req, res) => {
 
     if (!token) return res.status(400).send({ message: "Token Doesn't Exist" });
 
-    // res.status(200).send({message:"Valid url"});
+    res.status(200).send({message:"Valid url"}); // commented based on gbt
 
     if (!user.verified) user.verified = true;
 
