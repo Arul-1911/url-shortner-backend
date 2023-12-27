@@ -104,7 +104,7 @@ router.post("/:id/:token", async (req, res) => {
 
     if (!token) return res.status(400).send({ message: "Token Doesn't Exist" });
 
-    res.status(200).send({message:"Valid url"}); // commented based on gbt
+    // res.status(200).send({message:"Valid url"}); // commented based on gbt
 
     if (!user.verified) user.verified = true;
 
@@ -113,10 +113,15 @@ router.post("/:id/:token", async (req, res) => {
 
     user.password = hashPassword;
     await user.save();
-    await token.remove();
+    // await token.remove();
+     await Token.findOneAndDelete({
+      userId: user._id,
+      token: req.params.token,
+    });
 
     res.status(200).send({ message: "Password reset successfully" });
   } catch (error) {
+    console.log(error);
     res.status(500).send({ message: "Internal server error" });
   }
 });
