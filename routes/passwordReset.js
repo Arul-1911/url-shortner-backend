@@ -33,7 +33,7 @@ router.post("/", async (req, res) => {
 		}
 
 		// const url = `${process.env.BASE_URL}password-reset/${user._id}/${token.token}/`;
-    const url = `http://localhost:3000/api/password-reset/${user._id}/${token.token}/`;
+    const url = `https://cheerful-cajeta-d59fab.netlify.app/api/password-reset/${user._id}/${token.token}/`;//to add frontend url deployed
     
 		await sendEmail(user.email, "Password Reset", url);
 
