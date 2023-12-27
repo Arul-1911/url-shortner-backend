@@ -33,7 +33,11 @@ router.post("/", async (req, res) => {
 		}
 
 		// const url = `${process.env.BASE_URL}password-reset/${user._id}/${token.token}/`;
-    const url = `https://cheerful-cajeta-d59fab.netlify.app/api/password-reset/${user._id}/${token.token}/`;//to add frontend url deployed
+    // const url = `https://cheerful-cajeta-d59fab.netlify.app/api/password-reset/${user._id}/${token.token}/`;
+
+    const url = `https://guvi-password-frontend-5pnjn1row-aruls-projects-26ac488f.vercel.app/api/password-reset/${user._id}/${token.token}/`;
+    
+    //to add frontend url deployed
     
 		await sendEmail(user.email, "Password Reset", url);
 
