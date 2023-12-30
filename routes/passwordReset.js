@@ -10,43 +10,40 @@ const bcrypt = require("bcrypt");
 //send password link
 
 router.post("/", async (req, res) => {
-	try {
-		const emailSchema = Joi.object({
-			email: Joi.string().email().required().label("Email"),
-		});
-		const { error } = emailSchema.validate(req.body);
-		if (error)
-			return res.status(400).send({ message: error.details[0].message });
+  try {
+    const emailSchema = Joi.object({
+      email: Joi.string().email().required().label("Email"),
+    });
+    const { error } = emailSchema.validate(req.body);
+    if (error)
+      return res.status(400).send({ message: error.details[0].message });
 
-		let user = await User.findOne({ email: req.body.email });
-		if (!user)
-			return res
-				.status(409)
-				.send({ message: "User with given email does not exist!" });
+    let user = await User.findOne({ email: req.body.email });
+    if (!user)
+      return res
+        .status(409)
+        .send({ message: "User with given email does not exist!" });
 
-		let token = await Token.findOne({ userId: user._id });
-		if (!token) {
-			token = await new Token({
-				userId: user._id,
-				token: crypto.randomBytes(32).toString("hex"),
-			}).save();
-		}
-
-		// const url = `${process.env.BASE_URL}password-reset/${user._id}/${token.token}/`;
-    // const url = `https://cheerful-cajeta-d59fab.netlify.app/api/password-reset/${user._id}/${token.token}/`;
+    let token = await Token.findOne({ userId: user._id });
+    if (!token) {
+      token = await new Token({
+        userId: user._id,
+        token: crypto.randomBytes(32).toString("hex"),
+      }).save();
+    }
 
     const url = `https://guvi-password-frontend-5pnjn1row-aruls-projects-26ac488f.vercel.app/api/password-reset/${user._id}/${token.token}/`;
-    
-    //to add frontend url deployed
-    
-		await sendEmail(user.email, "Password Reset", url);
 
-		res
-			.status(200)
-			.send({ message: "Password reset link sent to your email account" });
-	} catch (error) {
-		res.status(500).send({ message: "Internal Server Error" });
-	}
+    //to add frontend url deployed
+
+    await sendEmail(user.email, "Password Reset", url);
+
+    res
+      .status(200)
+      .send({ message: "Password reset link sent to your email account" });
+  } catch (error) {
+    res.status(500).send({ message: "Internal Server Error" });
+  }
 });
 
 //verify url
@@ -54,7 +51,7 @@ router.post("/", async (req, res) => {
 router.get("/:id/:token", async (req, res) => {
   try {
     const user = await User.findOne({ _id: req.params.id });
-    console.log(user)
+    console.log(user);
     if (!user) return res.status(400).send({ message: "Invalid Link" });
 
     const token = await Token.findOne({
@@ -64,23 +61,9 @@ router.get("/:id/:token", async (req, res) => {
 
     if (!token) return res.status(400).send({ message: "Token Doesn't Exist" });
 
-//redirect funtion to show password reset component
+    //redirect funtion to show password reset component
 
-
-//  res.redirect(`http://localhost:3000/password-reset/${user._id}/${token.token}`);
-
-    res.status(200).send({ message: "Valid url" });  // password issue line..
-
-    //new gbt code
-    // const resetUrl = `http://localhost:3000/password-reset/${user._id}/${token.token}`;
-
-    // // Uncomment the line below if you want to redirect to the reset URL
-    // // res.redirect(resetUrl);
-
-    // // Alternatively, you can include the reset URL in the response
-    // res.status(200).send({ message: "Valid url", resetUrl });
-
-
+    res.status(200).send({ message: "Valid url" }); // password
   } catch (error) {
     res.status(500).send({ message: "Internal server error" });
   }
@@ -108,8 +91,6 @@ router.post("/:id/:token", async (req, res) => {
 
     if (!token) return res.status(400).send({ message: "Token Doesn't Exist" });
 
-    // res.status(200).send({message:"Valid url"}); // commented based on gbt
-
     if (!user.verified) user.verified = true;
 
     const salt = await bcrypt.genSalt(Number(process.env.SALT));
@@ -118,7 +99,7 @@ router.post("/:id/:token", async (req, res) => {
     user.password = hashPassword;
     await user.save();
     // await token.remove();
-     await Token.findOneAndDelete({
+    await Token.findOneAndDelete({
       userId: user._id,
       token: req.params.token,
     });
