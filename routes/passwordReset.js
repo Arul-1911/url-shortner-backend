@@ -32,7 +32,7 @@ router.post("/", async (req, res) => {
       }).save();
     }
 
-    const url = `https://guvi-password-frontend-5pnjn1row-aruls-projects-26ac488f.vercel.app/api/password-reset/${user._id}/${token.token}/`;
+    const url = `https://url-shortner-eta-weld.vercel.app/api/password-reset/${user._id}/${token.token}/`;
 
     //to add frontend url deployed
 
